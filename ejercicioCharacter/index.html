@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="root"></div>
+    <div id="description"></div>
+    <script type="module">
+        class API {
+            async getCharacter(id) {
+              const response = await fetch(`https://rickandmortyapi.com/api/character/${id}`)
+              const data = await response.json()
+              return data
+            }
+        }
+
+        class Character {
+            constructor({ name, image, gender, species, status }) {
+                this.name = name
+                this.image = image
+                this.gender = gender
+                this.species = species
+                this.status = status 
+                this.$image = document.querySelector('#root');
+                this.$description = document.querySelector('#description')
+                this.render()
+            }
+        
+            buildImage() {
+                return `
+                    <img class="character-image" src="${this.image}" alt="${this.name}">
+                `;
+            }
+
+            buildDescription() {
+                return `
+                <p>
+                    <h4>${this.gender}</h4>
+                    <h4>${this.species}</h4>
+                    <h4>${this.status}</h4>
+                </p>
+                `;
+            }
+        
+            render() {
+                this.$image.innerHTML = this.buildImage();
+                this.$description.innerHTML = this.buildDescription();
+            }
+        }
+
+        const api = new API();
+
+        async function initApp(initCharacter=1) {
+            console.warn(initCharacter)
+            const respuesta = await api.getCharacter(initCharacter)
+            console.log(respuesta)
+            new Character(respuesta)
+        }
+        initApp();
+    </script>
+</body>
+</html>
